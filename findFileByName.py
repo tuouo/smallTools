@@ -1,67 +1,70 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+import os 
 '''
 Only under os.path.abspath('.'), a file can be distinguish as file.
 '''
-import os 
+
+def selectCondition(dirname, toFind, opt):
+    flag = False
+    if opt == 'name':
+        if toFind == dirname.split('.')[0]:
+            flag = True
+        elif toFind == dirname:
+            flag = True
+    elif opt == 'pattern':
+        flag = True if toFind in dirname else False
+    elif opt == 'suffix':
+        flag = True if toFind == dirname.split('.')[-1] else False
+    return flag
 
 def findFileFirst(toFind, root = '.', opt = 'name'):
     dirlist = os.listdir(root)
     for x in dirlist:
         path = os.path.join(root, x)
-        flag = False
-        if opt == 'name':
-        	flag = True if toFind == x.split('.')[0]
-        if os.path.isfile(path) and flag:
+        if os.path.isfile(path) and selectCondition(x, toFind, opt):
             print(path)
     for x in dirlist:
         path = os.path.join(root, x)
         if os.path.isdir(path):
-            findFileFirst(toFind, path)
+            findFileFirst(toFind, path, opt)
 
-def findFileOrderByPattern(pattern = 'txt', root = '.'):
+def findFileOrder(toFind = 'txt', root = '.', opt = 'name'):
     dirs = []
     for x in os.listdir(root):
         path = os.path.join(root, x)	
-        if os.path.isfile(path) and pattern in x:	# os.path.isfile(path), path not x
+        if os.path.isfile(path) and selectCondition(x, toFind, opt):
             print(path)		
         elif os.path.isdir(path):	
             dirs.append(path)
     for dir in dirs:
-        findFile(pattern, dir)
+        findFileOrder(toFind, dir)
 
 def findFileFirstByPattern(pattern = 'txt', root = '.'):
-    dirlist = os.listdir(root)
-    for x in dirlist:
-        path = os.path.join(root, x)
-        if os.path.isfile(path) and pattern in x:
-            print(path)
-    for x in dirlist:
-        path = os.path.join(root, x)
-        if os.path.isdir(path):
-            findFileByPattern(pattern, path)
+    findFileFirst(pattern, root, 'pattern')
 
-def findFileFirstByName(name, root = '.'):
-    dirlist = os.listdir(root)
-    for x in dirlist:
-        path = os.path.join(root, x)
-        if os.path.isfile(path) and name == x.split('.')[0]:
-            print(path)
-    for x in dirlist:
-        path = os.path.join(root, x)
-        if os.path.isdir(path):
-            findFileFirstByName(name, path)
+def findFileFirstByName(name = '', root = '.'):
+    findFileFirst(name, root, 'name')
+
+def findFileOrderByPattern(pattern = 'txt', root = '.'):
+    findFileOrder(pattern, root, 'pattern')
+
+def findFileOrderByName(name = '', root = '.'):
+    findFileOrder(name, root, 'name')
 
 def test_find(func):
-    func('.txt')
+    func('.md')
     print("End of one findding.")
-    func('Except')
+    func('md')
     print("End of one findding.")
     func('otf', r'C:\soft')
+    print("End of one findding.")
+    func('.gitconfig', r'C:')
     print("End of one findding.")
     func('pdf', 'C:\\Users\\tuouo_000\\Documents\\其它')
     print()
 
-test_find(findFileOrderByPattern)
 #test_find(findFileFirstByPattern)
 #test_find(findFileFirstByName)
+#test_find(findFileOrderByPattern)
+#test_find(findFileOrderByName)
