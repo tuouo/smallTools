@@ -8,5 +8,5 @@ os.chdir(path)							# set current path
 dirlist = os.listdir(path)
 for i in dirlist:
     names = os.path.splitext(i)
-    name = names[0].split('_')[0] + names[1]    
+    name = names[0].split('150')[1][1:] + names[1]  
     os.rename(i, name)
