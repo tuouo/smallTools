@@ -1,5 +1,7 @@
 .idea
 __pycache__
 
+_eric6project
+
 # test:
 test.py
