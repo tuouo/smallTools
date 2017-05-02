@@ -67,9 +67,7 @@ if __name__ == '__main__':
     # unittest.main()
     import datetime
     from collections import defaultdict
-    begin = datetime.date(2016, 1, 1)
-    end = datetime.date(2018, 1, 1)
-    delta = datetime.timedelta(days=1)
+    begin, end, delta = datetime.date(2015, 1, 1), datetime.date(2018, 1, 1), datetime.timedelta(days=1)
     get = defaultdict(list)
     while begin < end:
         get[DateInfo.get_date_month_later(begin.year, begin.month, begin.day)] += [(begin.year, begin.month, begin.day)]
@@ -78,8 +76,14 @@ if __name__ == '__main__':
         get[DateInfo.get_date_year_later(begin.year, begin.month, begin.day)] += [(begin.year, begin.month, begin.day)]
         begin += delta
 
-    print(get)
-    get = defaultdict(list, {k: v for k, v in get.items() if k[0] > 2016})
-    get = {k: v for k, v in get.items() if k[0] == 2017 }
-    get_len = {k: len(v) for k, v in get.items()}
-    print(get_len)
+    get_2016 = {k: v for k, v in get.items() if k[0] == 2016}
+    get_2017 = {k: v for k, v in get.items() if k[0] == 2017}
+
+    assert max(get_2016, key=lambda i: len(get_2016[i])) == (2016, 2, 29)
+    assert max(get_2017, key=lambda i: len(get_2017[i])) == (2017, 2, 28)
+    assert get[(2016, 2, 28)] == [(2015, 2, 28), (2015, 8, 28), (2015, 11, 28), (2016, 1, 28)]
+    assert get[(2016, 2, 29)] == [(2015, 8, 29), (2015, 8, 30), (2015, 8, 31), (2015, 11, 29), (2015, 11, 30),
+                                  (2016, 1, 29), (2016, 1, 30), (2016, 1, 31)]
+    assert get[(2017, 2, 28)] == [(2016, 2, 28), (2016, 2, 29), (2016, 8, 28), (2016, 8, 29), (2016, 8, 30),
+                                  (2016, 8, 31), (2016, 11, 28), (2016, 11, 29), (2016, 11, 30),
+                                  (2017, 1, 28), (2017, 1, 29), (2017, 1, 30), (2017, 1, 31)]
